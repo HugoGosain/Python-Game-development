@@ -14,6 +14,8 @@ bullets = []
 buglist = []
 bugcount = 25
 
+score = 0
+
 for i in range(5):
     for j in range(5):
         bugs = Actor("bug")
@@ -22,9 +24,9 @@ for i in range(5):
         buglist.append(bugs)
 
 def draw():
-    global gameover
+    global gameover,score
     screen.clear()
-    if gameover:
+    if gameover == False:
         spaceship.draw()
         for j in buglist:
             j.draw()
@@ -32,14 +34,14 @@ def draw():
             i.draw()
     if gameover == "lost":
         screen.fill("black")
-        screen.draw.text("You got eaten",center = (WIDTH/2,HEIGHT/2))
+        screen.draw.text("You got eaten\npress r to replay",center = (WIDTH/2,HEIGHT/2))
     if len(buglist) == 0:
         gameover = True
-        screen.draw.text("You win",center = (WIDTH/2,HEIGHT/2))
-
+        screen.draw.text("You win\npress r to replay",center = (WIDTH/2,HEIGHT/2))
+    screen.draw.text(f"you killed {score} out of 25 aliens",topleft = (0,0))
 
 def update():
-    global gameover
+    global gameover,score
     if keyboard.a or keyboard.left:
         spaceship.x = spaceship.x-5
     if keyboard.d or keyboard.right:
@@ -54,6 +56,7 @@ def update():
         b.y=b.y+2
         for r in bullets:
             if r.colliderect(b):
+                score += 1
                 buglist.remove(b)
                 bullets.remove(r)
 
@@ -61,7 +64,7 @@ def update():
             gameover = "lost"
 
 def on_key_down(key):
-    global bullets,buglist
+    global bullets,buglist,gameover,score
     if key == keys.SPACE or key == keys.UP:
         # draw bullet
         bullet = Actor("bullete")
@@ -74,6 +77,7 @@ def on_key_down(key):
             gameover = False
             bullets = []
             buglist = []
+            score = 0
             for i in range(5):
                 for j in range(5):
                     bugs = Actor("bug")
